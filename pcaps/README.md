@@ -3,7 +3,6 @@
 ###### September 23, 2015
 
 
-**set1.pcap**
 
 1. 861 packets
 
@@ -23,8 +22,6 @@ and anyone capturing traffic can construct a copy of the file.
 8. CDkv69qUsAAq8zN.jpg, CLu-m0MWoAAgjkr.jpg, CJoWmoOUkAAAYpx.jpg, COaqQWnU8AAwX3K.jpg, CNsAEaYUYAARuaj.jpg, CKBXgmOWcAAtc4u.jpg
 
 
-**set2.pcap**
-
 10. 77982 packets
 
 11. 1 pair
@@ -35,7 +32,6 @@ and anyone capturing traffic can construct a copy of the file.
 
 14. This username password pair was granted access successfully.
 
-**set3.pcap**
 
 15. 3 pairs
 
@@ -49,7 +45,6 @@ and anyone capturing traffic can construct a copy of the file.
 
 18. The most popular hostnames include amazon web services (a number of IP addresses including 54.193.4.196 and 54.219.162.53), twitter api (199.16.156.xxx block), and various google services (216.58.216.xxx and 216.58.217.xxx).
 
-**general**
 
 19. To verify successful username-password pairs, I followed the TCP stream in Wireshark to see if either 200 OK and/or LOGIN SUCCESSFUL messages were sent back by the server, or there was some kind of PERMISSION DENIED message. It was generally pretty clear what happened.
 
