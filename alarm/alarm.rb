@@ -3,7 +3,7 @@ require 'packetfu'
 def main()
     stream = PacketFu::Capture.new(:start => true, 
                 :iface => 'eth0', :promisc => false)
-
+    counter = 0
     stream.stream.each do |raw|
         pkt = PacketFu::Packet.parse raw
         #if pkt.is_tcp?
@@ -12,22 +12,31 @@ def main()
         #       proto:", pkt.proto.last, "\n"
         #   print "flags:", pkt.tcp_flags, "\n"
         #end
-        type = nil
+        scanType = nil
         if pkt.is_tcp?
-            pkt.tcp_flags.ack = 0;
-            pkt.tcp_flags.rst = 0;
-            pkt.tcp_flags.syn = 0;
-            pkt.tcp_flags.urg = 0;
-            pkt.tcp_flags.psh = 0;
-            pkt.tcp_flags.fin = 0;
-            puts isSynScan(pkt.tcp_flags)
-            exit
+#            pkt.tcp_flags.ack = 0;
+#            pkt.tcp_flags.rst = 0;
+#            pkt.tcp_flags.syn = 0;
+#            pkt.tcp_flags.urg = 0;
+#            pkt.tcp_flags.psh = 0;
+#            pkt.tcp_flags.fin = 0;
             if isNullScan(pkt.tcp_flags)
-                puts "NULL"
+                scanType = "NULL"
             elsif isFinScan(pkt.tcp_flags)
-                puts "FIN"
+                scanType = "FIN"
             elsif isXmasScan(pkt.tcp_flags)
-                puts "XMAS"
+                scanType = "Xmas"
+            elsif isSynScan(pkt.tcp_flags)
+                scanType = "SYN"
+            end
+
+            # Only print out inident report if recognized intrusion
+            if (scanType != nil)
+                counter += 1  
+                print counter,". ","ALERT ", scanType
+                print " scan is detected from ", pkt.ip_saddr
+                print " (", pkt.proto.last, ") "
+                print "\n"
             end
         end
     end
