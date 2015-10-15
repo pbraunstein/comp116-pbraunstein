@@ -25,7 +25,11 @@ def main()
 end
 
 def analyzeLog(inputFile)
-    puts inputFile
+    File.open(inputFile, "r") do |f|
+        f.each_line do |line|
+            puts line.split.length
+        end
+    end
 end
 
 def liveCapture()
