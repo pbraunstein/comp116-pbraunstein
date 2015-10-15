@@ -27,7 +27,20 @@ end
 def analyzeLog(inputFile)
     File.open(inputFile, "r") do |f|
         f.each_line do |line|
-            puts line.split.length
+            listL =  line.split("- -")
+            if listL.length < 2
+                next
+            end
+            command = listL[1].scan(/"([^"]*)"/)[0][0]
+            if isNmapScan(command)
+                puts line
+            elsif isNiktoScan(command)
+                puts line
+            elsif isCreditCard(command)
+                puts line
+            elsif isBadPHP(command)
+                puts line
+            end
         end
     end
 end
@@ -44,6 +57,7 @@ def liveCapture()
         # Reset these each times so no "dead squirrls"
         scanType = nil
         if pkt.is_tcp?
+            pkt.payload = "helpi'masupi6011-0987-3452-4234-astinearst"
             # If I sent the packet, don't report it
             if pkt.ip_saddr == me
                 next
@@ -146,32 +160,30 @@ end
 # Returns the number if found, otherwise, returns nil
 def getCreditCard(payload)
     # VISA
-    matchList = payload.scan(/(4\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})/) 
+    matchList = payload.scan(/(4\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})\D/) 
     if matchList.length > 0
-        print matchList
-        return matchList[0]
+        return matchList[0][0]
     end
 
     # MASTER CARD
     #form with dashes
-    matchList = payload.scan(/(5\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})/) 
+    matchList = payload.scan(/(5\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})\D/) 
     if matchList.length > 0
-        return matchList[0]
+        return matchList[0][0]
     end
 
     # DISCOVER
     #form with dashes
-    matchList = payload.scan(/(6011(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})/) 
-    puts matchList
+    matchList = payload.scan(/(6011(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})\D/) 
     if matchList.length > 0
-        return matchList[0]
+        return matchList[0][0]
     end
 
     # AMERICAN EXPRESS
     #form with dashes
-    matchList = payload.scan(/(3\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})/) 
+    matchList = payload.scan(/(3\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})\D/) 
     if matchList.length > 0
-        return matchList[0]
+        return matchList[0][0]
     end
 
     return nil
@@ -209,6 +221,15 @@ def isNiktoScan(payload)
     if payload.scan(/Nikto/i).length > 0
         return true
     elsif payload.scan(/\x4E\x69\x6B\x74\x6F/).length > 0
+        return true
+    else
+        return false
+    end
+end
+
+# Pulls out phpMyAdmin badness
+def isBadPHP(payload)
+    if payload.include?("phpMyAdmin")
         return true
     else
         return false
