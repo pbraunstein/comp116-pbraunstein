@@ -4,18 +4,31 @@ require 'base64'
 def main()
     stream = PacketFu::Capture.new(:start => true, 
                 :iface => 'eth0', :promisc => false)
+
+    me = PacketFu::Utils.whoami?()[:ip_saddr]
     counter = 0
     stream.stream.each do |raw|
         pkt = PacketFu::Packet.parse raw
+            
         # Reset these each times so no "dead squirrls"
         scanType = nil
         if pkt.is_tcp?
+            # If I sent the packet, don't report it
+            if pkt.ip_saddr == me
+                next
+            end
+
+            # Check for known scans
             if isNullScan(pkt.tcp_flags)
                 scanType = "NULL"
             elsif isFinScan(pkt.tcp_flags)
                 scanType = "FIN"
             elsif isXmasScan(pkt.tcp_flags)
                 scanType = "Xmas"
+            elsif isNmapScan(pkt.payload)
+                scanType = "Nmap"
+            elsif isNiktoScan(pkt.payload)
+                scanType = "Nikto"
             elsif isSynScan(pkt.tcp_flags)
                 scanType = "SYN"
             end
@@ -125,6 +138,32 @@ def isCreditCard(payload)
         return false
     else
         return true
+    end
+end
+
+
+# Accepts a payload from a tcp packet and searches for nmap in binary and
+# plain text ignoring case
+def isNmapScan(payload)
+    if payload.scan(/Nmap/i).length > 0
+        return true
+    elsif payload.scan(/\x4E\x6D\x61\x70/).length > 0
+        return true
+    else
+        return false
+    end
+end
+
+
+# Accepts a payload from a tcp packet and searches for nikto in binary and
+# plain text ignoring case
+def isNiktoScan(payload)
+    if payload.scan(/Nikto/i).length > 0
+        return true
+    elsif payload.scan(/\x4E\x69\x6B\x74\x6F/).length > 0
+        return true
+    else
+        return false
     end
 end
 
