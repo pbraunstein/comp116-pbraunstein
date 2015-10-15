@@ -18,6 +18,8 @@ def main()
                 next
             end
 
+            pkt.payload = "ploploplop4011746546758490nehdtt"
+
             # Check for known scans
             if isNullScan(pkt.tcp_flags)
                 scanType = "NULL"
@@ -34,13 +36,13 @@ def main()
             end
 
             # Only print out inident report if recognized intrusion
-            if (scanType != nil)
-                counter += 1  
-                print counter,". ","ALERT ", scanType
-                print " scan is detected from ", pkt.ip_saddr
-                print " (", pkt.proto.last, ") "
-                print "\n"
-            end
+#            if (scanType != nil)
+#                counter += 1  
+#                print counter,". ","ALERT ", scanType
+#                print " scan is detected from ", pkt.ip_saddr
+#                print " (", pkt.proto.last, ") "
+#                print "\n"
+#            end
             if (isCreditCard(pkt.payload))
                 counter += 1
                 cc = getCreditCard(pkt.payload)
@@ -49,6 +51,7 @@ def main()
                 print pkt.ip_saddr
                 print " (", pkt.proto.last, ") "
                 print "\n"
+                exit
             end
         end
     end
@@ -114,14 +117,31 @@ end
 # Looks for 2 different credit card formats in the payload
 # Returns the number if found, otherwise, returns nil
 def getCreditCard(payload)
+    # VISA
+    matchList = payload.scan(/(4\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})/) 
+    if matchList.length > 0
+        print matchList
+        return matchList[0]
+    end
+
+    # MASTER CARD
     #form with dashes
-    matchList = payload.scan(/\d{4}-\d{4}-\d{4}-\d{4}/) 
+    matchList = payload.scan(/(5\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})/) 
     if matchList.length > 0
         return matchList[0]
     end
 
-    # form with spaces 
-    matchList = payload.scan(/\d{4}\s+\d{4}\s+\d{4}\s+\d{4}/)
+    # DISCOVER
+    #form with dashes
+    matchList = payload.scan(/(6011(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})/) 
+    puts matchList
+    if matchList.length > 0
+        return matchList[0]
+    end
+
+    # AMERICAN EXPRESS
+    #form with dashes
+    matchList = payload.scan(/(3\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4})/) 
     if matchList.length > 0
         return matchList[0]
     end
