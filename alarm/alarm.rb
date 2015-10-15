@@ -1,7 +1,34 @@
+#!/usr/bin/env ruby
 require 'packetfu'
 require 'base64'
 
 def main()
+    # Get right number of arguments from command line
+    if ARGV.length != 0 && ARGV.length != 2
+        puts "ERROR: Script invoked incorrectly"
+        puts "USAGE: Alarm -- ruby alarm.rb"
+        puts "USAGE: Analyze Log  -- ruby alarm.rb -r <logfile>"
+        exit 1
+    end
+
+    if ARGV.length == 0
+        liveCapture()
+    else  # That is, argv.length == 2
+        if ARGV[0] != '-r'
+            print "Unrecognized Option ", ARGV[0], "\n"
+            exit 1
+        else  # Go ahead and analyze file
+            analyzeLog(ARGV[1])
+        end
+    end
+    exit 0
+end
+
+def analyzeLog(inputFile)
+    puts inputFile
+end
+
+def liveCapture()
     stream = PacketFu::Capture.new(:start => true, 
                 :iface => 'eth0', :promisc => false)
 
@@ -17,8 +44,6 @@ def main()
             if pkt.ip_saddr == me
                 next
             end
-
-            pkt.payload = "ploploplop4011746546758490nehdtt"
 
             # Check for known scans
             if isNullScan(pkt.tcp_flags)
@@ -36,13 +61,13 @@ def main()
             end
 
             # Only print out inident report if recognized intrusion
-#            if (scanType != nil)
-#                counter += 1  
-#                print counter,". ","ALERT ", scanType
-#                print " scan is detected from ", pkt.ip_saddr
-#                print " (", pkt.proto.last, ") "
-#                print "\n"
-#            end
+            if (scanType != nil)
+                counter += 1  
+                print counter,". ","ALERT ", scanType
+                print " scan is detected from ", pkt.ip_saddr
+                print " (", pkt.proto.last, ") "
+                print "\n"
+            end
             if (isCreditCard(pkt.payload))
                 counter += 1
                 cc = getCreditCard(pkt.payload)
@@ -51,7 +76,6 @@ def main()
                 print pkt.ip_saddr
                 print " (", pkt.proto.last, ") "
                 print "\n"
-                exit
             end
         end
     end
