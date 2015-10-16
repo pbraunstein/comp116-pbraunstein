@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'packetfu'
 require 'base64'
+require 'apachelogregex'
 
 def main()
     # Get right number of arguments from command line
@@ -25,20 +26,15 @@ def main()
 end
 
 def analyzeLog(inputFile)
+    parser = ApacheLogRegex.new('%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"')
     File.open(inputFile, "r") do |f|
         f.each_line do |line|
-            listL =  line.split("- -")
-            if listL.length < 2
-                next
-            end
-            command = listL[1].scan(/"([^"]*)"/)[0][0]
-            if isNmapScan(command)
+            dictio = parser.parse(line)
+            if isNmapScan(dictio["%r"]) || isNmapScan(dictio["%{User-agent}i"])
                 puts line
-            elsif isNiktoScan(command)
+            elsif isNiktoScan(dictio["%r"]) || isNiktoScan(dictio["%{User-agent}i"])
                 puts line
-            elsif isCreditCard(command)
-                puts line
-            elsif isBadPHP(command)
+            elsif isNiktoScan(dictio["%r"]) || isCreditCard(dictio["%{User-agent}i"])
                 puts line
             end
         end
@@ -230,6 +226,14 @@ end
 # Pulls out phpMyAdmin badness
 def isBadPHP(payload)
     if payload.include?("phpMyAdmin")
+        return true
+    else
+        return false
+    end
+end
+
+def isShellShock(payload)
+    if payload.include?("() { :;};")
         return true
     else
         return false
