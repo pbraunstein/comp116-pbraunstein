@@ -48,6 +48,8 @@ def analyzeLog(inputFile)
                 incident = "phpMyAdmin Use"
             elsif isShellShock(dictio["%r"]) || isShellShock(dictio["%{User-agent}i"])
                 incident = "ShellShock Exploitation"
+            elsif isHasX(dictio["%r"]) || isHasX(dictio["%{User-agent}i"])
+                incident = "Injection of Shell Code"
             end
 
             if !incident.nil?
@@ -251,6 +253,14 @@ end
 
 def isShellShock(payload)
     if payload.include?("() { :;};")
+        return true
+    else
+        return false
+    end
+end
+
+def isHasX(payload)
+    if payload.include?("\\x")
         return true
     else
         return false
