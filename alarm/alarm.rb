@@ -27,19 +27,33 @@ end
 
 def analyzeLog(inputFile)
     parser = ApacheLogRegex.new('%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"')
+    parser2 = ApacheLogRegex.new('%h %l %u %t \"%r\" %>s %b"')
+    count = 0
     File.open(inputFile, "r") do |f|
         f.each_line do |line|
+            incident = nil
+            # Try parsers for both formats and if neither work, skip that line
             dictio = parser.parse(line)
+            if dictio.nil?
+                dictio = parser2.parse(line)
+            end
+            if dictio.nil?
+                next
+            end
             if isNmapScan(dictio["%r"]) || isNmapScan(dictio["%{User-agent}i"])
-                puts line
+                incident = "Nmap Scan"
             elsif isNiktoScan(dictio["%r"]) || isNiktoScan(dictio["%{User-agent}i"])
-                puts line
-            elsif isCreditCard(dictio["%r"]) || isCreditCard(dictio["%{User-agent}i"])
-                puts line
+                incident = "Nikto Scan"
             elsif isBadPHP(dictio["%r"]) || isBadPHP(dictio["%{User-agent}i"])
-                puts line
+                incident = "phpMyAdmin Use"
             elsif isShellShock(dictio["%r"]) || isShellShock(dictio["%{User-agent}i"])
-                puts line
+                incident = "ShellShock Exploitation"
+            end
+
+            if !incident.nil?
+                count += 1
+                print count, ". ALERT: ", incident, " is detected from "
+                print dictio["%h"], "\n"
             end
         end
     end
