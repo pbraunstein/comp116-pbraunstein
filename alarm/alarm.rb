@@ -55,7 +55,8 @@ def analyzeLog(inputFile)
             if !incident.nil?
                 count += 1
                 print count, ". ALERT: ", incident, " is detected from "
-                print dictio["%h"], "\n"
+                print dictio["%h"], " (", dictio["%r"].split.last, ") ("
+                print dictio["%r"], ")\n"
             end
         end
     end
@@ -259,6 +260,7 @@ def isShellShock(payload)
     end
 end
 
+# Look for anything that looks like shell code
 def isHasX(payload)
     if payload.include?("\\x")
         return true
