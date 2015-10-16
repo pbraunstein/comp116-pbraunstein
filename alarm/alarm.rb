@@ -34,7 +34,11 @@ def analyzeLog(inputFile)
                 puts line
             elsif isNiktoScan(dictio["%r"]) || isNiktoScan(dictio["%{User-agent}i"])
                 puts line
-            elsif isNiktoScan(dictio["%r"]) || isCreditCard(dictio["%{User-agent}i"])
+            elsif isCreditCard(dictio["%r"]) || isCreditCard(dictio["%{User-agent}i"])
+                puts line
+            elsif isBadPHP(dictio["%r"]) || isBadPHP(dictio["%{User-agent}i"])
+                puts line
+            elsif isShellShock(dictio["%r"]) || isShellShock(dictio["%{User-agent}i"])
                 puts line
             end
         end
@@ -53,7 +57,6 @@ def liveCapture()
         # Reset these each times so no "dead squirrls"
         scanType = nil
         if pkt.is_tcp?
-            pkt.payload = "helpi'masupi6011-0987-3452-4234-astinearst"
             # If I sent the packet, don't report it
             if pkt.ip_saddr == me
                 next
