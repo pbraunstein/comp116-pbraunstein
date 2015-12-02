@@ -1,7 +1,13 @@
 #!/usr/bin/env python
-# Prints options for random password PW_LENGTH long, containing 3 of the 4
+#
+# randomPass.py
+# Philip Braunstein
+# COMP116: Making Secure Easy-to-Remember Passwords
+#
+# Generates 10 random password PW_LENGTH long, containing 3 of the 4
 # following character types: lower case letter, upper case letter, symbol,
-# number
+# number. All passwords printed to screen.
+#
 
 # CONSTANTS
 NUM_PASSES = 10

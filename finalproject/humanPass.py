@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+#
+# humanPass.py
+# Philip Braunstein
+# COMP116: Making Secure Easy-to-Remember Passwords
+#
+# Generates 10 modified XKCD style passwords from noun, verb, and adjective
+# word lists. Prints all passwords (each word separated by spaces for
+# readability) to screen.
+#
 
 # CONSTANTS
 NOUN_FILE = "nouns.txt"
