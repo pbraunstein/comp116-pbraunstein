@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# smartPercSim.py
+# smartFracSim.py
 # Philip Braunstein
 # COMP116: Making Secure Easy-to-Remember Passwords
 #

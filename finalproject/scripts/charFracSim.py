@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# charPerc.py
+# charFracSim.py
 # Philip Braunstein
 # COMP116: Making Secure Easy-to-Remember Passwords
 #

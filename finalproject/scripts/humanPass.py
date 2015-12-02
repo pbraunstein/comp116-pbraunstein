@@ -10,9 +10,9 @@
 #
 
 # CONSTANTS
-NOUN_FILE = "nouns.txt"
-VERB_FILE = "verbs.txt"
-ADJ_FILE = "adjectives.txt"
+NOUN_FILE = "../wordlists/nouns.txt"
+VERB_FILE = "../wordlists/verbs.txt"
+ADJ_FILE = "../wordlists/adjectives.txt"
 NUM_PASSES = 10
 
 from sys import exit
