@@ -14,7 +14,7 @@ from sys import exit
 import random
 
 def main():
-    opts = ['RS', 'MPN', 'MX']
+    opts = ['RS', 'MPM', 'MX']
 
     random.shuffle(opts)
 
