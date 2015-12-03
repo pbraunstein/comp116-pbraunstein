@@ -23,7 +23,7 @@ def main():
 
     charPerc = float(sum(charPercList)) / float(len(charPercList))
 
-    print "Character Percent Similarity:", charPerc
+    print "Character Percent Similarity:", round(charPerc, 2)
 
     exit(0)
 

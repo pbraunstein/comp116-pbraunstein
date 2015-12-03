@@ -21,9 +21,9 @@ def main():
 
     avgPercSim = (forPercSim + revPercSim) / 2.0
 
-    print "Forward Percent Similarity:", forPercSim
-    print "Reverse Percent Similarity:", revPercSim
-    print "Average Percent Similarity:", avgPercSim
+    print "Forward Percent Similarity:", round(forPercSim, 2)
+    print "Reverse Percent Similarity:", round(revPercSim, 2)
+    print "Average Percent Similarity:", round(avgPercSim, 2)
     
     exit(0)
 
