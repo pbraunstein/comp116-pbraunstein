@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+#
+# makeHashes.py
+# Philip Braunstein
+# COMP116: Making Secure Easy-to-Remember Passwords
+#
+# Hashes each line of the first file on the command line and writes out the
+# results to the second file provided on the command line. This script uses an
+# unsalted MD5 hash/
+#
 
 from sys import argv
 from sys import exit
