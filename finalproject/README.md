@@ -8,7 +8,7 @@ This repository contains my final project for the COMP116 security class. The
 `scripts` folder contains all of the scripts described in the report, and the
 wordlists folder contains the word lists used to make the MX passwords. The
 final write up of the report is the Better\_Passwords.pdf document. The scripts
-and wordlists are publically available in this repo:
+and wordlists are publically available in this github repository:
 https://github.com/pbraunstein/Security-Final-Project
 
 #### Scripts
